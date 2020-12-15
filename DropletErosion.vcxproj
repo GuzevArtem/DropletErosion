@@ -81,7 +81,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>D:\Dev\Streams;D:\Dev\OpenCV\opencv\include;D:\Dev\opengl\glm;$(IncludePath)</IncludePath>
+    <IncludePath>D:\Dev\Streams;D:\Dev\OpenCV\opencv\build\install\include;D:\Dev\opengl\glm;$(IncludePath)</IncludePath>
     <LibraryPath>D:\Dev\OpenCV\opencv\build\install\x64\vc16\bin;D:\Dev\OpenCV\opencv\build\lib\Release;D:\Dev\OpenCV\opencv\build\bin\Release;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
