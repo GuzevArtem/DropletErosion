@@ -40,6 +40,6 @@ namespace utils_random
     T rand (const uint32_t x, const uint32_t y, const uint32_t iteration, const T from, const T to, uint32_t seed) noexcept
     {
         std::default_random_engine eng = getRandGenerator (seed, x, y, iteration);
-        return rand<T> (eng, from, to);
+        return rand<T> (&eng, from, to);
     }
 }

@@ -150,6 +150,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Droplet.hpp" />
+    <ClInclude Include="DropletService.hpp" />
     <ClInclude Include="Grid.hpp" />
     <ClInclude Include="GridToOpenCVConverter.hpp" />
     <ClInclude Include="Math.hpp" />

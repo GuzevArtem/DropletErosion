@@ -7,7 +7,6 @@
 #include <random>
 
 #include "Grid.hpp"
-#include "UtilsRandom.hpp"
 
 template<
     typename _value_type,
@@ -22,9 +21,10 @@ class RandomNumberStreamHolder
     using seed_type = _seed_type;
 
     using random_engine_type = _random_engine_type;
+    using random_engine_ptr = std::shared_ptr<random_engine_type>;
 
     using initial_seed_grid = Grid<seed_type, size_type>;
-    using sequence_grid = Grid<_random_engine_type, size_type>;
+    using sequence_grid = Grid<random_engine_ptr, size_type>;
     using last_value_grid = Grid<value_type, size_type>;
 
 private:
@@ -56,7 +56,8 @@ public:
         _create_sequnce_and_last_value_based_on_init_seeds ();
     }
 
-    RandomNumberStreamHolder (initial_seed_grid& grid, value_type min, value_type max) : min (min), max (max),
+    RandomNumberStreamHolder (initial_seed_grid& grid, value_type min, value_type max)
+        : min (min), max (max),
         init_seed (grid),
         sequence (sequence_grid{ grid.get_x_size(), grid .get_y_size()}),
         last_value (last_value_grid{ grid.get_x_size (), grid.get_y_size () })
@@ -84,18 +85,18 @@ public:
 
 private:
 
-    random_engine_type _create_random_engine (seed_type seed) const
+    random_engine_ptr _create_random_engine (seed_type seed) const
     {
         const std::seed_seq ss{ seed };
-        return random_engine_type{ ss };
+        return std::make_shared<random_engine_type>(random_engine_type{ ss });
     }
 
-    random_engine_type _get_random_engine (size_type index) const
+    random_engine_ptr _get_random_engine (size_type index) const
     {
         return sequence.at_unchecked (index);
     }
 
-    random_engine_type _get_random_engine (size_type x, size_type y) const
+    random_engine_ptr _get_random_engine (size_type x, size_type y) const
     {
         return sequence.at_unchecked (x, y);
     }
@@ -104,9 +105,9 @@ private:
     {
         init_seed.for_each ([this](size_type x, size_type y, const seed_type value)
                             {
-                                const random_engine_type eng = _create_random_engine ( value );
+                                const random_engine_ptr eng = _create_random_engine ( value );
                                 this->sequence.assign_unchecked (x, y, eng);
-                                this->last_value.assign_unchecked (x, y, utils_random::rand (eng, this->min, this->max));
+                                this->last_value.assign_unchecked (x, y, rand (eng, this->min, this->max));
                             });
     }
 
@@ -122,7 +123,7 @@ private:
     {
         sequence.for_each ([this](size_type x, size_type y, const std::seed_seq value)
                             {
-                               this->last_value.assign_unchecked (x, y, utils_random::rand(_get_random_engine (x, y), this->min, this->max));
+                               this->last_value.assign_unchecked (x, y, rand(_get_random_engine (x, y), this->min, this->max));
                             });
     }
 
@@ -134,7 +135,7 @@ private:
         }
         else
         {
-            return utils_random::rand (_get_random_engine (index), min, max);
+            return rand (_get_random_engine (index), min, max);
         }
     }
 
@@ -146,7 +147,7 @@ private:
         }
         else
         {
-            return utils_random::rand (_get_random_engine(x, y), min, max);
+            return rand (_get_random_engine(x, y), min, max);
         }
     }
 
@@ -162,6 +163,21 @@ private:
         const value_type value = _get_random_for (x, y, false);
         last_value.assign_unchecked (x, y, value);
         return value;
+    }
+
+    [[nodiscard]]
+    static inline value_type rand (random_engine_ptr eng, const value_type from, const value_type to)
+    {
+        if constexpr ( std::is_floating_point<value_type>::value )
+        {
+            std::uniform_real_distribution<value_type> urd (from, to);
+            return urd (*eng);
+        }
+        else
+        {
+            std::uniform_int_distribution<value_type> urd (from, to);
+            return urd (*eng);
+        }
     }
 
 public:

@@ -19,11 +19,11 @@ namespace configuration
 		return size_in_meters * 1.0 / size_in_pixels;
 	}
 
-	constexpr double PIXEL_TO_METER_RATIO_X = calcPixelToMeterRatio(MAP_SIZE_X_M, MAP_SIZE_X); // coef
-	constexpr double PIXEL_TO_METER_RATIO_Y = calcPixelToMeterRatio(MAP_SIZE_Y_M, MAP_SIZE_Y); // coef
+	constexpr double PIXEL_TO_METER_RATIO_X = calcPixelToMeterRatio(MAP_SIZE_X_M, MAP_SIZE_X); // coef how many meters in pixel along x
+	constexpr double PIXEL_TO_METER_RATIO_Y = calcPixelToMeterRatio(MAP_SIZE_Y_M, MAP_SIZE_Y); // coef how many meters in pixel along y
 
-	constexpr double METER_TO_PIXEL_RATIO_X = 1.0/ PIXEL_TO_METER_RATIO_X; // coef
-	constexpr double METER_TO_PIXEL_RATIO_Y = 1.0/ PIXEL_TO_METER_RATIO_Y; // coef
+	constexpr double METER_TO_PIXEL_RATIO_X = 1.0/ PIXEL_TO_METER_RATIO_X; // coef how many pixels in meter along x
+	constexpr double METER_TO_PIXEL_RATIO_Y = 1.0/ PIXEL_TO_METER_RATIO_Y; // coef how many pixels in meter along y
 
 	constexpr double TERRAIN_BASE_ELEVATION = 0; // in meters (default elevation)
 	constexpr double TERRAIN_MINIMUM_ELEVATION = -1000; // in meters (value 0 on height map)

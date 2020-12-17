@@ -72,4 +72,3 @@ public:
 };
 
 #endif // !_RNG_SERVICE_HPP_
-

@@ -9,15 +9,23 @@
 
 class Terrain
 {
+	using height_map_type = Grid<double>;
+	using normal_map_type = Grid<glm::f64vec3>;
+	using water_map_type = Grid<double>;
+
+	using height_map_ptr = std::shared_ptr <height_map_type>;
+	using normal_map_ptr = std::shared_ptr <normal_map_type>;
+	using water_map_ptr = std::shared_ptr <water_map_type>;
+
 public:
 	Terrain() :
 		min_eval(0),
 		max_eval(1),
 		size_x(100),
 		size_y(100),
-		heightMap (size_x, size_y),
-		normalMap (size_x, size_y),
-		waterMap (size_x, size_y),
+		heightMap (std::make_shared<height_map_type>(size_x, size_y)),
+		normalMap (std::make_shared<normal_map_type> (size_x, size_y)),
+		waterMap (std::make_shared<water_map_type> (size_x, size_y)),
 		pixel_to_meter_ratio_x(1),
 		pixel_to_meter_ratio_y(1)
 	{}
@@ -27,9 +35,9 @@ public:
 		max_eval (max_eval),
 		size_x (100),
 		size_y (100),
-		heightMap (size_x, size_y),
-		normalMap (size_x, size_y),
-		waterMap (size_x, size_y),
+		heightMap (std::make_shared<height_map_type> (size_x, size_y)),
+		normalMap (std::make_shared<normal_map_type> (size_x, size_y)),
+		waterMap (std::make_shared<water_map_type> (size_x, size_y)),
 		pixel_to_meter_ratio_x (1),
 		pixel_to_meter_ratio_y (1)
 	{}
@@ -39,9 +47,9 @@ public:
 		max_eval (max_eval),
 		size_x (size_x),
 		size_y (size_y),
-		heightMap (size_x, size_y),
-		normalMap (size_x, size_y),
-		waterMap (size_x, size_y),
+		heightMap (std::make_shared<height_map_type> (size_x, size_y)),
+		normalMap (std::make_shared<normal_map_type> (size_x, size_y)),
+		waterMap (std::make_shared<water_map_type> (size_x, size_y)),
 		pixel_to_meter_ratio_x (1),
 		pixel_to_meter_ratio_y (1)
 	{}
@@ -51,17 +59,17 @@ public:
 		max_eval (max_eval),
 		size_x (size_x),
 		size_y (size_y),
-		heightMap (size_x, size_y),
-		normalMap (size_x, size_y),
-		waterMap (size_x, size_y),
+		heightMap (std::make_shared<height_map_type> (size_x, size_y)),
+		normalMap (std::make_shared<normal_map_type> (size_x, size_y)),
+		waterMap (std::make_shared<water_map_type> (size_x, size_y)),
 		pixel_to_meter_ratio_x (pixel_to_meter_ratio_x),
 		pixel_to_meter_ratio_y (pixel_to_meter_ratio_y)
 	{}
 
-	Terrain (Grid<glm::f64vec1> heightMap, const double min_eval, const double max_eval, double pixel_to_meter_ratio_x, double pixel_to_meter_ratio_y) :
-		heightMap(heightMap),
-		normalMap (heightMap.get_x_size (), heightMap.get_y_size ()),
-		waterMap (heightMap.get_x_size (), heightMap.get_y_size ()),
+	Terrain (height_map_type heightMap, const double min_eval, const double max_eval, double pixel_to_meter_ratio_x, double pixel_to_meter_ratio_y) :
+		heightMap(std::make_shared<height_map_type>(heightMap)),
+		normalMap (std::make_shared<normal_map_type> (heightMap.get_x_size (), heightMap.get_y_size ())),
+		waterMap (std::make_shared<water_map_type> (heightMap.get_x_size (), heightMap.get_y_size ())),
 		min_eval (min_eval),
 		max_eval (max_eval),
 		size_x (heightMap.get_x_size()),
@@ -70,10 +78,10 @@ public:
 		pixel_to_meter_ratio_y (pixel_to_meter_ratio_y)
 	{}
 
-	Terrain (Grid<glm::f64vec1> heightMap, Grid<glm::f64vec3> normalMap, const double min_eval, const double max_eval, double pixel_to_meter_ratio_x, double pixel_to_meter_ratio_y) :
-		heightMap (heightMap),
-		normalMap(normalMap),
-		waterMap(heightMap.get_x_size(), heightMap.get_y_size()),
+	Terrain (height_map_type heightMap, normal_map_type normalMap, const double min_eval, const double max_eval, double pixel_to_meter_ratio_x, double pixel_to_meter_ratio_y) :
+		heightMap (std::make_shared<height_map_type> (heightMap)),
+		normalMap (std::make_shared<normal_map_type> (normalMap)),
+		waterMap (std::make_shared<water_map_type> (heightMap.get_x_size (), heightMap.get_y_size ())),
 		min_eval (min_eval),
 		max_eval (max_eval),
 		size_x (heightMap.get_x_size ()),
@@ -82,10 +90,10 @@ public:
 		pixel_to_meter_ratio_y (pixel_to_meter_ratio_y)
 	{}
 
-	Terrain (Grid<glm::f64vec1> heightMap, Grid<glm::f64vec3> normalMap, Grid<glm::f64vec1> waterMap, const double min_eval, const double max_eval, double pixel_to_meter_ratio_x, double pixel_to_meter_ratio_y) :
-		heightMap (heightMap),
-		normalMap (normalMap),
-		waterMap (waterMap),
+	Terrain (height_map_type heightMap, normal_map_type normalMap, water_map_type waterMap, const double min_eval, const double max_eval, double pixel_to_meter_ratio_x, double pixel_to_meter_ratio_y) :
+		heightMap (std::make_shared<height_map_type> (heightMap)),
+		normalMap (std::make_shared<normal_map_type> (normalMap)),
+		waterMap (std::make_shared<water_map_type> (waterMap)),
 		min_eval (min_eval),
 		max_eval (max_eval),
 		size_x (heightMap.get_x_size ()),
@@ -94,54 +102,54 @@ public:
 		pixel_to_meter_ratio_y (pixel_to_meter_ratio_y)
 	{}
 
-	const Grid<glm::f64vec1>& getHeightMap () const noexcept
+	const height_map_ptr& getHeightMap () const noexcept
 	{
 		return heightMap;
 	}
 
-	Grid<glm::f64vec1>& getHeightMap () noexcept
+	height_map_ptr& getHeightMap () noexcept
 	{
 		return heightMap;
 	}
 
-	void setHeightMap (Grid<glm::f64vec1> heightMap) noexcept
+	void setHeightMap (height_map_type heightMap) noexcept
 	{
-		this->heightMap = heightMap;
+		this->heightMap = std::make_shared<height_map_type>(heightMap);
 	}
 
-	const Grid<glm::f64vec3>& getNormalMap () const noexcept
+	const normal_map_ptr& getNormalMap () const noexcept
 	{
 		return normalMap;
 	}
 
-	Grid<glm::f64vec3>& getNormalMap () noexcept
+	normal_map_ptr& getNormalMap () noexcept
 	{
 		return normalMap;
 	}
 
-	void setNormalMap (Grid<glm::f64vec3> normalMap) noexcept
+	void setNormalMap (normal_map_type normalMap) noexcept
 	{
-		this->normalMap = normalMap;
+		this->normalMap = std::make_shared<normal_map_type>(normalMap);
 	}
 
-	const Grid<glm::f64vec1>& getWaterMap () const noexcept
+	const water_map_ptr& getWaterMap () const noexcept
 	{
 		return waterMap;
 	}
 
-	Grid<glm::f64vec1>& getWaterMap () noexcept
+	water_map_ptr& getWaterMap () noexcept
 	{
 		return waterMap;
 	}
 
-	void setWaterMap (Grid<glm::f64vec1> waterMap) noexcept
+	void setWaterMap (water_map_type waterMap) noexcept
 	{
-		this->waterMap = waterMap;
+		this->waterMap = std::make_shared<water_map_type>(waterMap);
 	}
 
 	void generateNormalMap ()
 	{
-		this->normalMap = NormalMapGenerator::caclulateWorldSpaceNormalFromHeightMap (this->heightMap, this->pixel_to_meter_ratio_x, this->pixel_to_meter_ratio_y);
+		setNormalMap(NormalMapGenerator::caclulateWorldSpaceNormalFromHeightMap (*this->heightMap, this->pixel_to_meter_ratio_x, this->pixel_to_meter_ratio_y));
 	}
 
 public:
@@ -155,9 +163,10 @@ public:
 	const double pixel_to_meter_ratio_y;
 
 private:
-	Grid<glm::f64vec1> heightMap;
-	Grid<glm::f64vec3> normalMap;
-	Grid<glm::f64vec1> waterMap;
+
+	height_map_ptr heightMap;
+	normal_map_ptr normalMap;
+	water_map_ptr waterMap;
 };
 
 #endif // !_TERRAIN_HPP_

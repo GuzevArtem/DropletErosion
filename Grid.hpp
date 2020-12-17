@@ -238,35 +238,37 @@ private:
 		}
 	};
 
-	void check_index(const size_type index)
-	{
-		const size_type bound = x_size * y_size;
-		if (index < bound)
-		{
-			raise_out_of_bounds_exception(index, bound);
-		}
-	}
-
-	void check_x(const size_type x)
-	{
-		if (x >= x_size)
-		{
-			raise_out_of_bounds_exception(x, x_size);
-		}
-	}
-
-	void check_y(const size_type y)
-	{
-		if (y >= y_size)
-		{
-			raise_out_of_bounds_exception(y, y_size);
-		}
-	}
-
 	static void raise_out_of_bounds_exception(const size_type value, const size_type bound)
 	{
 		throw new std::exception(std::string("Out of bounds exception: x {" + std::to_string(value) + "}, while x_size {" + std::to_string(bound) + "}").c_str());
 	}
+
+public:
+	void check_index (const size_type index)
+	{
+		const size_type bound = x_size * y_size;
+		if ( index >= bound )
+		{
+			raise_out_of_bounds_exception (index, bound);
+		}
+	}
+
+	void check_x (const size_type x)
+	{
+		if ( x >= x_size )
+		{
+			raise_out_of_bounds_exception (x, x_size);
+		}
+	}
+
+	void check_y (const size_type y)
+	{
+		if ( y >= y_size )
+		{
+			raise_out_of_bounds_exception (y, y_size);
+		}
+	}
+
 
 private:
 	size_type x_size;

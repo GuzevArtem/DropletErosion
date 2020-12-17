@@ -80,6 +80,9 @@
     <ClInclude Include="StaticConfig.hpp">
       <Filter>Header Files\configuration</Filter>
     </ClInclude>
+    <ClInclude Include="DropletService.hpp">
+      <Filter>Header Files\droplet</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />

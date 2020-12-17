@@ -129,7 +129,6 @@ public:
 			this->volume -= amount;
 		}
 
-
 		if ( onEvapprate )
 		{
 			onEvapprate->operator()(this, amount);
