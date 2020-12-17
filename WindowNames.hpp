@@ -71,4 +71,5 @@ namespace Window
     static const Window_Type DROPLET_VOLUME = create<1, double>("droplet volume");
     static const Window_Type SOIL_PICKED = create<1, double>("soil picked");
     static const Window_Type SOIL_DROPPED = create<1, double>("soil dropped");
+    static const Window_Type SEED = create<1, double> ("seed");
 };

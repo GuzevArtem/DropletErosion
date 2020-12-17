@@ -21,7 +21,8 @@ public:
                                const bool XisMax = x == (heightMap.get_x_size() - 1);
                                const bool YisMax = y == (heightMap.get_y_size() - 1);
 
-                               const auto c = channel;
+                               //to prevent warning only
+                               const glm::length_t c = (glm::length_t)channel;
 
                                double nx = value[c];
                                double ny = value[c];

@@ -13,6 +13,21 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\random">
+      <UniqueIdentifier>{5f8beafe-e549-4620-8763-755826b62521}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\terrain">
+      <UniqueIdentifier>{c02266fe-669d-4d18-b096-5be429fcefd8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\droplet">
+      <UniqueIdentifier>{d34471d5-d915-416b-a5bb-ca8412ff5a41}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\utils">
+      <UniqueIdentifier>{d87d8616-f406-4923-9d8e-bebdce1cce69}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\configuration">
+      <UniqueIdentifier>{566df8f3-30d7-4d97-9e3f-047ff251dafc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source.cpp">
@@ -20,41 +35,53 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="PerlinNoise.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="RandomNumberStreamHolder.hpp">
+      <Filter>Header Files\random</Filter>
     </ClInclude>
-    <ClInclude Include="Utils.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="UtilsRandom.hpp">
+      <Filter>Header Files\random</Filter>
     </ClInclude>
-    <ClInclude Include="Range.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="WindowNames.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Math.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TerrainGenerator.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Grid.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="NormapMapGenerator.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="StaticConfig.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GridToOpenCVConverter.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="RngService.hpp">
+      <Filter>Header Files\random</Filter>
     </ClInclude>
     <ClInclude Include="Terrain.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="TerrainGenerator.hpp">
+      <Filter>Header Files\terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="PerlinNoise.hpp">
+      <Filter>Header Files\terrain</Filter>
     </ClInclude>
     <ClInclude Include="Droplet.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\droplet</Filter>
     </ClInclude>
+    <ClInclude Include="NormapMapGenerator.hpp">
+      <Filter>Header Files\terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils.hpp">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowNames.hpp">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Range.hpp">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Math.hpp">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="GridToOpenCVConverter.hpp">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Grid.hpp">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticConfig.hpp">
+      <Filter>Header Files\configuration</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="README.md" />
   </ItemGroup>
 </Project>

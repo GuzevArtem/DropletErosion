@@ -6,6 +6,8 @@
 #include "Utils.hpp"
 #include "GridToOpenCVConverter.hpp"
 
+#include "RngService.hpp"
+
 #include "WindowNames.hpp"
 #include "TerrainGenerator.hpp"
 #include "NormapMapGenerator.hpp"
@@ -81,14 +83,40 @@ Grid<glm::f64vec1> map_droplets (const std::vector<Droplet>& droplets, uint32_t 
 
     for ( const auto& d : droplets )
     {
-        water.assign(d.pos.x, d.pos.y, water.at (d.pos.x, d.pos.y) + d.volume);
+        water.assign((uint32_t)d.pos.x, (uint32_t)d.pos.y, water.at ((uint32_t)d.pos.x, (uint32_t)d.pos.y) + d.volume);
     }
 
     return water;
 }
 
+#include <limits>
 
 int main ()
+{
+    std::cout << "Start\n";
+
+    std::seed_seq ss{ 5479U };
+
+    RNGService<uint32_t> serv;
+
+    serv.create_sequence ("default", ss, 0, 100, 10, 10);
+
+    const cv::Mat1d seeds = converter::to_Mat1d_image<uint32_t> (serv.get ("default").value().get_last_value (),
+                                                                 0,
+                                                                 100,
+                                                                 [](uint32_t value) -> double
+                                                                 {
+                                                                     return (double)value;
+                                                                 });
+
+    utils::opencv::display (seeds, Window::SEED.name ());
+
+    utils::opencv::getUserInput ();
+    utils::opencv::destroyAllWindows ();
+    std::cout << "End\n";
+}
+
+int main1 ()
 {
     const uint32_t x_size = configuration::MAP_SIZE_X;
     const uint32_t y_size = configuration::MAP_SIZE_Y;

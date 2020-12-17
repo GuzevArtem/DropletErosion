@@ -20,9 +20,9 @@ namespace converter
         cv::Mat1d result (grid.get_x_size (), grid.get_y_size ());
         grid.for_each ([&result, min_value, max_value, convert_function](const uint32_t x, const uint32_t y, const inner_type& value)
                        {
-                           const inner_type diapason = max_value - min_value;
-                           const inner_type value_to_norm = (value - min_value) / diapason;
-                           result.at<double> (x, y) = convert_function (value_to_norm);
+                           const double diapason = convert_function (max_value - min_value);
+                           const double value_to_norm = convert_function (value - min_value) / diapason;
+                           result.at<double> (x, y) = value_to_norm;
                        }
         );
         return result;
