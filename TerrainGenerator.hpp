@@ -59,8 +59,8 @@ public:
         };
 
         Grid<glm::f64vec3> normalMap(x_size, y_size);
-        //TODO: replace with parallel realization
-        normalMap.for_each(calculateNormalInPoint);
+
+        normalMap.for_each_par (calculateNormalInPoint);
 
         return { terrain, normalMap };
     }
@@ -87,8 +87,7 @@ public:
         };
 
         Grid<result_vec> terrain(x_size, y_size);
-        //TODO: replace with parallel realization
-        terrain.for_each(calculatePerlinInPoint);
+        terrain.for_each_par (calculatePerlinInPoint);
 
         return terrain;
     }
@@ -160,8 +159,8 @@ public:
         };
 
         Grid<glm::f64vec3> normalMap (x_size, y_size);
-        //TODO: replace with parallel realization
-        normalMap.for_each (calculateNormalInPoint);
+
+        normalMap.for_each_par (calculateNormalInPoint);
 
         return { terrain, normalMap };
     }
@@ -182,8 +181,8 @@ public:
         };
 
         Grid<double> terrain (x_size, y_size);
-        //TODO: replace with parallel realization
-        terrain.for_each (calculatePerlinInPoint);
+
+        terrain.for_each_par (calculatePerlinInPoint);
 
         return terrain;
     }
@@ -191,9 +190,9 @@ public:
     static inline Terrain createPerlinNoiseTerrain (const uint32_t x_size, uint32_t y_size,
                                                     const double min_height,
                                                     const double max_height,
+                                                    const double frequency = 256,
                                                     const double pixel_to_meter_ratio_x = 1,
                                                     const double pixel_to_meter_ratio_y = 1,
-                                                    const double frequency = 256,
                                                     const uint32_t perlin_octaves_count = 5,
                                                     const uint32_t seed = std::default_random_engine::default_seed)
     {

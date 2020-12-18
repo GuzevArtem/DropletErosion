@@ -13,7 +13,7 @@ Create erosion simulation system with real time update of images.
 TerrainGenerator - to create heightmap based on perlin noise
 NormalMapGenerator - creates normal map from heightmap (for faster drops calculation)
 RngService - has API to provide pseudo random streams of random numbers based provided parameters (such as coordinates, iteration) may be thread unsafe !!!
-DropletGenerationService - TBD - generates droplets based on given parameters
+DropletService - generates droplets based on given parameters
 ErosionService - TBD - performs iterative erosion operations
 
 ## Roadmap

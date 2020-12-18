@@ -8,11 +8,11 @@ namespace configuration
 {
 	/* map */
 
-	constexpr size_t MAP_SIZE_X = 1000; // in pixels
-	constexpr size_t MAP_SIZE_Y = 1000; // in pixels
+	constexpr size_t MAP_SIZE_X = 512; // in pixels
+	constexpr size_t MAP_SIZE_Y = 512; // in pixels
 
-	constexpr size_t MAP_SIZE_X_M = 1000; // in meters
-	constexpr size_t MAP_SIZE_Y_M = 1000; // in meters
+	constexpr size_t MAP_SIZE_X_M = 512; // in meters
+	constexpr size_t MAP_SIZE_Y_M = 512; // in meters
 
 	constexpr double calcPixelToMeterRatio(const size_t size_in_meters, const size_t size_in_pixels)
 	{
@@ -26,8 +26,8 @@ namespace configuration
 	constexpr double METER_TO_PIXEL_RATIO_Y = 1.0/ PIXEL_TO_METER_RATIO_Y; // coef how many pixels in meter along y
 
 	constexpr double TERRAIN_BASE_ELEVATION = 0; // in meters (default elevation)
-	constexpr double TERRAIN_MINIMUM_ELEVATION = -1000; // in meters (value 0 on height map)
-	constexpr double TERRAIN_MAXIMUM_ELEVATION = +1000; // in meters (value 1 on height map)
+	constexpr double TERRAIN_MINIMUM_ELEVATION = -100; // in meters (value 0 on height map)
+	constexpr double TERRAIN_MAXIMUM_ELEVATION = +100; // in meters (value 1 on height map)
 	constexpr double TERRAIN_HEIGHT = TERRAIN_MAXIMUM_ELEVATION - TERRAIN_MINIMUM_ELEVATION; // in meters
 	constexpr double SEA_LEVEL = 0; // in meters
 
@@ -40,7 +40,7 @@ namespace configuration
 
 	/* erosion */
 
-	constexpr double WATER_DROPLET_RADIUS = 5; // in pixels
+	constexpr double WATER_DROPLET_RADIUS = 0.65; // in pixels
 
 	constexpr double WATER_DROPLET_RADIUS_M = WATER_DROPLET_RADIUS * PIXEL_TO_METER_RATIO_X; // in meters
 	constexpr double WATER_DROPLET_VOLUME_M = 4 * M_PI * (WATER_DROPLET_RADIUS * WATER_DROPLET_RADIUS * WATER_DROPLET_RADIUS) / 3; // in meters^3
@@ -55,9 +55,9 @@ namespace configuration
 
 	/* simulation */
 
-	constexpr double TIME_STEP = 1.2;
+	constexpr double TIME_STEP = 4.2;
 	constexpr size_t MAX_STEPS = 200000;
 	constexpr size_t EROSION_STEP = 1000;
-	constexpr uint32_t INITIAL_MAXIMUM_DROPLET_COUNT = 100;
+	constexpr uint32_t INITIAL_MAXIMUM_DROPLET_COUNT = 10000;
 
 }

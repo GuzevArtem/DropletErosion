@@ -14,7 +14,7 @@ public:
     {
         Grid<glm::f64vec3> result(heightMap.get_x_size(), heightMap.get_y_size());
 
-        heightMap.for_each([channel, &result, &heightMap, pixel_to_meter_ratio_x, pixel_to_meter_ratio_y](const auto x, const auto y, const grid_cell_type value) -> void
+        heightMap.for_each_par ([channel, &result, &heightMap, pixel_to_meter_ratio_x, pixel_to_meter_ratio_y](const auto x, const auto y, const grid_cell_type value) -> void
                            {
                                const bool Xis0 = x == 0;
                                const bool Yis0 = y == 0;
@@ -66,10 +66,10 @@ public:
                                }
 
                                //interpolated values
-                               const double inter_nx = (nxny + nxpy + 2 * nx) / 4;
-                               const double inter_px = (pxny + pxpy + 2 * px) / 4;
-                               const double inter_ny = (nxny + pxny + 2 * ny) / 4;
-                               const double inter_py = (nxpy + pxpy + 2 * py) / 4;
+                               const double inter_nx = (nxny + nxpy + 3 * nx) / 5;
+                               const double inter_px = (pxny + pxpy + 3 * px) / 5;
+                               const double inter_ny = (nxny + pxny + 3 * ny) / 5;
+                               const double inter_py = (nxpy + pxpy + 3 * py) / 5;
 
                                const glm::f64vec3 v1{ 2.0 / pixel_to_meter_ratio_x, 0.0, (inter_px - inter_nx) };
                                const glm::f64vec3 v2{ 0.0, 2.0 / pixel_to_meter_ratio_y, (inter_py - inter_ny) };
@@ -91,7 +91,7 @@ public:
     {
         Grid<glm::f64vec3> result(heightMap.get_x_size(), heightMap.get_y_size());
 
-        heightMap.for_each([channel, &result, &heightMap, pixel_to_meter_ratio_x, pixel_to_meter_ratio_y](const auto x, const auto y, const grid_cell_type value) -> void
+        heightMap.for_each_par ([channel, &result, &heightMap, pixel_to_meter_ratio_x, pixel_to_meter_ratio_y](const auto x, const auto y, const grid_cell_type value) -> void
                            {
                                const bool Xis0 = x == 0;
                                const bool Yis0 = y == 0;
@@ -202,7 +202,7 @@ public:
     {
         Grid<glm::f64vec3> result (heightMap.get_x_size (), heightMap.get_y_size ());
 
-        heightMap.for_each ([channel, &result, &heightMap, pixel_to_meter_ratio_x, pixel_to_meter_ratio_y](const auto x, const auto y, const double value) -> void
+        heightMap.for_each_par ([channel, &result, &heightMap, pixel_to_meter_ratio_x, pixel_to_meter_ratio_y](const auto x, const auto y, const double value) -> void
                             {
                                 const bool Xis0 = x == 0;
                                 const bool Yis0 = y == 0;
@@ -251,10 +251,10 @@ public:
                                 }
 
                                 //interpolated values
-                                const double inter_nx = (nxny + nxpy + 2 * nx) / 4;
-                                const double inter_px = (pxny + pxpy + 2 * px) / 4;
-                                const double inter_ny = (nxny + pxny + 2 * ny) / 4;
-                                const double inter_py = (nxpy + pxpy + 2 * py) / 4;
+                                const double inter_nx = (nxny + nxpy + 3 * nx) / 5;
+                                const double inter_px = (pxny + pxpy + 3 * px) / 5;
+                                const double inter_ny = (nxny + pxny + 3 * ny) / 5;
+                                const double inter_py = (nxpy + pxpy + 3 * py) / 5;
 
                                 const glm::f64vec3 v1{ 2.0 / pixel_to_meter_ratio_x, 0.0, (inter_px - inter_nx) };
                                 const glm::f64vec3 v2{ 0.0, 2.0 / pixel_to_meter_ratio_y, (inter_py - inter_ny) };
@@ -276,7 +276,7 @@ public:
     {
         Grid<glm::f64vec3> result (heightMap.get_x_size (), heightMap.get_y_size ());
 
-        heightMap.for_each ([channel, &result, &heightMap, pixel_to_meter_ratio_x, pixel_to_meter_ratio_y](const auto x, const auto y, const double value) -> void
+        heightMap.for_each_par ([channel, &result, &heightMap, pixel_to_meter_ratio_x, pixel_to_meter_ratio_y](const auto x, const auto y, const double value) -> void
                             {
                                 const bool Xis0 = x == 0;
                                 const bool Yis0 = y == 0;

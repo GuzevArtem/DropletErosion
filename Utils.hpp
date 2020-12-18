@@ -7,6 +7,7 @@
 #include <execution>
 #include <ranges>
 #include <iterator>
+#include <type_traits>
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -113,6 +114,11 @@ namespace utils
             waitKey();
         }
 
+        inline void refresh (const Mat& image, const std::string window_name = "Display image")
+        {
+            imshow (window_name, image);                   // Show our image inside it.
+        }
+
         inline void display(const Mat& image, const std::string window_name = "Display image", const int flag = WindowFlags::WINDOW_NORMAL, const int wx = 900, const int wy = 600)
         {
             cv::namedWindow(window_name, flag);// Create a window for display.
@@ -120,7 +126,7 @@ namespace utils
             {
                 cv::resizeWindow(window_name, wx, wy);
             }
-            imshow(window_name, image);                   // Show our image inside it.
+            refresh (image, window_name);                   // Show our image inside it.
         }
 
         inline Mat loadImage(std::string image_path, std::string image_name, int image_read_mode = ImreadModes::IMREAD_COLOR)
@@ -139,6 +145,92 @@ namespace utils
             std::cout << "Saving image at: " << image_path << image_name << std::endl;
             cv::imwrite(image_path + image_name,
                         image); //no ideas why it is working
+        }
+
+        template<typename type>
+        inline void saveImage (cv::Mat_<type> image, std::string image_path, std::string image_name)
+        {
+            constexpr uchar MAX_VALUE = 255;
+            cv::Mat4b result = cv::Mat4b::zeros (image.size());
+            if constexpr ( std::is_same<type, double >::value)
+            {
+                for ( int i = 0; i < result.rows; ++i )
+                {
+                    for ( int j = 0; j < result.cols; ++j )
+                    {
+                        cv::Vec4b& bgra = result.at<cv::Vec4b> (i, j);
+                        bgra[0] = cv::saturate_cast<uchar>(image.at<type> (i, j) * MAX_VALUE); // Blue
+                        bgra[1] = cv::saturate_cast<uchar>(image.at<type> (i, j) * MAX_VALUE); // Green
+                        bgra[2] = cv::saturate_cast<uchar>(image.at<type> (i, j) * MAX_VALUE); // Red
+                        bgra[3] = MAX_VALUE; // Alpha
+                    }
+                }
+            }
+            else if constexpr (std::is_same<type, cv::Vec<double, 1> >::value )
+            {
+                for ( int i = 0; i < result.rows; ++i )
+                {
+                    for ( int j = 0; j < result.cols; ++j )
+                    {
+                        cv::Vec4b& bgra = result.at<cv::Vec4b> (i, j);
+                        bgra[0] = cv::saturate_cast<uchar>(image.at<type> (i, j)[0] * MAX_VALUE); // Blue
+                        bgra[1] = cv::saturate_cast<uchar>(image.at<type> (i, j)[0] * MAX_VALUE); // Green
+                        bgra[2] = cv::saturate_cast<uchar>(image.at<type> (i, j)[0] * MAX_VALUE); // Red
+                        bgra[3] = MAX_VALUE; // Alpha
+                    }
+                }
+            }
+            else if constexpr ( std::is_same<type, cv::Vec2d >::value )
+            {
+                for ( int i = 0; i < result.rows; ++i )
+                {
+                    for ( int j = 0; j < result.cols; ++j )
+                    {
+                        cv::Vec4b& bgra = result.at<cv::Vec4b> (i, j);
+                        bgra[0] = cv::saturate_cast<uchar>(image.at<type> (i, j)[0] *MAX_VALUE); // Blue
+                        bgra[1] = cv::saturate_cast<uchar>(image.at<type> (i, j)[1] *MAX_VALUE); // Green
+                        bgra[2] = 0; // Red
+                        bgra[3] = MAX_VALUE; // Alpha
+                    }
+                }
+            }
+            else if constexpr ( std::is_same<type, cv::Vec3d >::value )
+            {
+                for ( int i = 0; i < result.rows; ++i )
+                {
+                    for ( int j = 0; j < result.cols; ++j )
+                    {
+                        cv::Vec4b& bgra = result.at<cv::Vec4b> (i, j);
+                        bgra[0] = cv::saturate_cast<uchar>(image.at<type> (i, j)[0] * MAX_VALUE); // Blue
+                        bgra[1] = cv::saturate_cast<uchar>(image.at<type> (i, j)[1] * MAX_VALUE); // Green
+                        bgra[2] = cv::saturate_cast<uchar>(image.at<type> (i, j)[2] * MAX_VALUE); // Red
+                        bgra[3] = MAX_VALUE; // Alpha
+                    }
+                }
+            }
+            else
+            {
+                for ( int i = 0; i < result.rows; ++i )
+                {
+                    for ( int j = 0; j < result.cols; ++j )
+                    {
+                        cv::Vec4b& bgra = result.at<cv::Vec4b> (i, j);
+                        bgra[0] = cv::saturate_cast<uchar>(image.at<type> (i, j)[0] * MAX_VALUE); // Blue
+                        bgra[1] = cv::saturate_cast<uchar>(image.at<type> (i, j)[1] * MAX_VALUE); // Green
+                        bgra[2] = cv::saturate_cast<uchar>(image.at<type> (i, j)[2] * MAX_VALUE); // Red
+                        bgra[3] = cv::saturate_cast<uchar>(image.at<type> (i, j)[3] * MAX_VALUE); // Alpha
+                    }
+                }
+            }
+
+            std::cout << "Saving image at: " << image_path << image_name << std::endl;
+            std::vector<int> params;
+            params.push_back (cv::IMWRITE_PNG_COMPRESSION);
+            params.push_back (9);
+            params.push_back (cv::IMWRITE_JPEG_QUALITY);
+            params.push_back (100);
+            cv::imwrite (image_path + image_name,
+                         result, params);
         }
 
         inline Mat addImage(Mat src, Mat added, cv::InputArray mask = Mat())

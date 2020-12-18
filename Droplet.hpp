@@ -15,9 +15,9 @@ public:
 	static void populateEventProcessors (const Droplet * const example, Droplet value)
 	{
 		if ( example->onSpawn ) value.onSpawn = std::make_shared<std::function<void (Droplet*)>> (*example->onSpawn.get ());
-		if ( example->onMove ) value.onMove = std::make_shared<std::function<void (Droplet*)>> (*example->onMove.get ());
+		if ( example->onMove ) value.onMove = std::make_shared<std::function<void (Droplet*, glm::f64vec3)>> (*example->onMove.get ());
 		if ( example->onStop ) value.onStop = std::make_shared<std::function<void (Droplet*)>> (*example->onStop.get ());
-		if ( example->onSoilPick ) value.onSoilPick = std::make_shared<std::function<void (Droplet*)>> (*example->onSoilPick.get ());
+		if ( example->onSoilPick ) value.onSoilPick = std::make_shared<std::function<void (Droplet*, double)>> (*example->onSoilPick.get ());
 		if ( example->onEvapprate ) value.onEvapprate = std::make_shared<std::function<void (Droplet*, double)>> (*example->onEvapprate.get ());
 		if ( example->onSoilDrop ) value.onSoilDrop = std::make_shared<std::function<void (Droplet*, double)>> (*example->onSoilDrop.get ());
 		if ( example->onDead ) value.onDead = std::make_shared<std::function<void (Droplet*)>> (*example->onDead.get ());
@@ -26,9 +26,9 @@ public:
 	static void populateEventProcessors (const Droplet& example, Droplet value)
 	{
 		if ( example.onSpawn ) value.onSpawn = std::make_shared<std::function<void (Droplet*)>> (*example.onSpawn.get ());
-		if ( example.onMove ) value.onMove = std::make_shared<std::function<void (Droplet*)>> (*example.onMove.get ());
+		if ( example.onMove ) value.onMove = std::make_shared<std::function<void (Droplet*, glm::f64vec3)>> (*example.onMove.get ());
 		if ( example.onStop ) value.onStop = std::make_shared<std::function<void (Droplet*)>> (*example.onStop.get ());
-		if ( example.onSoilPick ) value.onSoilPick = std::make_shared<std::function<void (Droplet*)>> (*example.onSoilPick.get ());
+		if ( example.onSoilPick ) value.onSoilPick = std::make_shared<std::function<void (Droplet*, double)>> (*example.onSoilPick.get ());
 		if ( example.onEvapprate ) value.onEvapprate = std::make_shared<std::function<void (Droplet*, double)>> (*example.onEvapprate.get ());
 		if ( example.onSoilDrop ) value.onSoilDrop = std::make_shared<std::function<void (Droplet*, double)>> (*example.onSoilDrop.get ());
 		if ( example.onDead ) value.onDead = std::make_shared<std::function<void (Droplet*)>> (*example.onDead.get ());
@@ -93,12 +93,16 @@ public:
 		}
 	}
 
-	void pick_soil ()
+	double pick_soil (const double amount)
 	{
+		//TTODO: add logic to cap max pick amount
+		this->soil += amount;
+
 		if ( onSoilPick )
 		{
-			onSoilPick->operator()(this);
+			onSoilPick->operator()(this, amount);
 		}
+		return amount;
 	}
 
 	void soil_drop (const double amount)
@@ -117,12 +121,13 @@ public:
 	{
 		if ( amount >= this->volume )
 		{
-			if ( onEvapprate )
+			/*if ( onEvapprate )
 			{
 				onEvapprate->operator()(this, this->volume);
-			}
+			}*/
 			dead ();
 			return;
+			//dead end
 		}
 		else
 		{
@@ -135,18 +140,20 @@ public:
 		}
 	}
 
-	void move ()
+	void move (const glm::f64vec3 new_pos)
 	{
 		isMoving = true;
+		const glm::f64vec3 old_pos = pos;
+		pos = new_pos;
+		path_passed += glm::length (new_pos - old_pos);
 		if ( onMove )
 		{
-			onMove->operator()(this);
+			onMove->operator()(this, new_pos);
 		}
 	}
 
 	void stop ()
 	{
-		this->speed = glm::f64vec3{0,0,0};
 		this->isMoving = false;
 		if ( onStop )
 		{
@@ -186,9 +193,9 @@ public:
 
 	//events processors
 	std::shared_ptr<std::function<void (Droplet*)>> onSpawn{};
-	std::shared_ptr<std::function<void (Droplet*)>> onMove{};
+	std::shared_ptr<std::function<void (Droplet*, glm::f64vec3)>> onMove{};
 	std::shared_ptr<std::function<void (Droplet*)>> onStop{};
-	std::shared_ptr<std::function<void (Droplet*)>> onSoilPick{};
+	std::shared_ptr<std::function<void (Droplet*, double)>> onSoilPick{};
 	std::shared_ptr<std::function<void (Droplet*, double)>> onSoilDrop{};
 	std::shared_ptr<std::function<void (Droplet*, double)>> onEvapprate{};
 	std::shared_ptr<std::function<void (Droplet*)>> onDead{};

@@ -18,7 +18,7 @@ namespace converter
                                      })
     {
         cv::Mat1d result (grid.get_x_size (), grid.get_y_size ());
-        grid.for_each ([&result, min_value, max_value, convert_function](const uint32_t x, const uint32_t y, const inner_type& value)
+        grid.for_each_par ([&result, min_value, max_value, convert_function](const uint32_t x, const uint32_t y, const inner_type& value)
                        {
                            const double diapason = convert_function (max_value - min_value);
                            const double value_to_norm = convert_function (value - min_value) / diapason;
@@ -32,7 +32,7 @@ namespace converter
     inline cv::Mat2d to_Mat2d_image (const Grid<inner_type>& grid, const inner_type& min_value, const inner_type& max_value)
     {
         cv::Mat2d result (grid.get_x_size (), grid.get_y_size ());
-        grid.for_each ([&result, min_value, max_value](const uint32_t x, const uint32_t y, const inner_type& value)
+        grid.for_each_par ([&result, min_value, max_value](const uint32_t x, const uint32_t y, const inner_type& value)
                     {
                         for ( auto c = 0; c < 2; c++ )
                         {
@@ -47,7 +47,7 @@ namespace converter
     inline cv::Mat3d to_Mat3d_image (const Grid<inner_type>& grid, const inner_type& min_value, const inner_type& max_value)
     {
         cv::Mat3d result (grid.get_x_size (), grid.get_y_size ());
-        grid.for_each ([&result, min_value, max_value](const uint32_t x, const uint32_t y, const inner_type& value)
+        grid.for_each_par ([&result, min_value, max_value](const uint32_t x, const uint32_t y, const inner_type& value)
                     {
                         for ( auto c = 0; c < 3; c++ )
                         {
@@ -62,7 +62,7 @@ namespace converter
     inline cv::Mat4d to_Mat4d_image (const Grid<inner_type>& grid, const inner_type& min_value, const inner_type& max_value)
     {
         cv::Mat4d result (grid.get_x_size (), grid.get_y_size ());
-        grid.for_each ([&result, min_value, max_value](const uint32_t x, const uint32_t y, const inner_type& value)
+        grid.for_each_par ([&result, min_value, max_value](const uint32_t x, const uint32_t y, const inner_type& value)
                     {
                         for ( auto c = 0; c < 4; c++ )
                         {
@@ -77,7 +77,7 @@ namespace converter
     inline cv::Mat_<cv::Vec<double, channels>> to_MatNd_image (const Grid<inner_type>& grid, const inner_type& min_value, const inner_type& max_value)
     {
         cv::Mat_<cv::Vec<double, channels>> result (grid.get_x_size (), grid.get_y_size ());
-        grid.for_each ([&result, min_value, max_value](const uint32_t x, const uint32_t y, const inner_type& value)
+        grid.for_each_par ([&result, min_value, max_value](const uint32_t x, const uint32_t y, const inner_type& value)
                     {
                         for ( auto c = 0; c < channels; c++ )
                         {

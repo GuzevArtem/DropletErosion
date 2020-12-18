@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef RANGE_ITERATOR_H
-#define RANGE_ITERATOR_H
+#ifndef _RANGE_ITERATOR_HPP_
+#define _RANGE_ITERATOR_HPP_
 
 #include <iterator>
 #include <concepts>
@@ -18,7 +18,6 @@ namespace utils
     class Range
     {
     public:
-        // start providing publicly accessible typedefs named iterator_category, value_type, difference_type, pointer, and reference
         Range(Discrete _from = 0, Discrete _to = 0) : from(_from), to(_to)
         {}
 
@@ -78,4 +77,4 @@ namespace utils
     };
 }
 
-#endif // !RANGE_ITERATOR_H
+#endif // !_RANGE_ITERATOR_HPP_

@@ -103,7 +103,7 @@ private:
 
     void _create_sequnce_and_last_value_based_on_init_seeds ()
     {
-        init_seed.for_each ([this](size_type x, size_type y, const seed_type value)
+        init_seed.for_each_par ([this](size_type x, size_type y, const seed_type value)
                             {
                                 const random_engine_ptr eng = _create_random_engine ( value );
                                 this->sequence.assign_unchecked (x, y, eng);
@@ -113,7 +113,7 @@ private:
 
     void _create_sequnce_based_on_init_seeds ()
     {
-        init_seed.for_each ([this](size_type x, size_type y, const seed_type value)
+        init_seed.for_each_par ([this](size_type x, size_type y, const seed_type value)
                             {
                                 this->sequence.assign_unchecked (x, y, _create_random_engine ( value ));
                             });
@@ -121,7 +121,7 @@ private:
 
     void _create_last_values_based_on_sequence ()
     {
-        sequence.for_each ([this](size_type x, size_type y, const std::seed_seq value)
+        sequence.for_each_par ([this](size_type x, size_type y, const std::seed_seq value)
                             {
                                this->last_value.assign_unchecked (x, y, rand(_get_random_engine (x, y), this->min, this->max));
                             });

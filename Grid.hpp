@@ -4,6 +4,10 @@
 #include <vector>
 #include <exception>
 
+//for parallel processing
+#include <algorithm>
+#include "Range.hpp"
+
 template<typename T, typename _size_type = uint32_t, typename _holder_type = std::vector<T>>
 class Grid
 {
@@ -187,6 +191,11 @@ public:
 		return x + y * x_size;
 	}
 
+	const std::tuple<size_type, size_type> from_1_d (const size_type index) const noexcept
+	{
+		return { index % x_size, index / x_size };
+	}
+
 	void for_each(std::function<data_type(size_type, size_type)> operation)
 	{
 		for (size_type x = 0; x < x_size; x++)
@@ -207,6 +216,27 @@ public:
 				operation(x, y, data[to_1_d (x, y)]);
 			}
 		}
+	}
+
+	void for_each_par (std::function<data_type (size_type, size_type)> operation)
+	{
+
+		utils::Range<size_type> it{ 0, x_size * y_size - 1 };
+		std::for_each (std::execution::par, it.begin (), it.end (), [&operation, this](const auto val) -> void
+					   {
+						   const auto [x, y] = from_1_d (val);
+						   data[val] = operation (x, y);
+					   });
+	}
+
+	void for_each_par (std::function<void (size_type, size_type, const data_type)> operation) const
+	{
+		utils::Range<size_type> it{ 0, x_size * y_size - 1 };
+		std::for_each (std::execution::par, it.begin (), it.end (), [&operation, this](const auto val) -> void
+					   {
+						   const auto [x, y] = from_1_d (val);
+						   operation (x, y, data[val]);
+					   });
 	}
 
 private:
