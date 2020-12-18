@@ -79,7 +79,7 @@ private:
 			{
 				const double available_to_pick = max_picked - d.soil;
 				const double proportion = available_to_pick / max_picked;
-				const double diffusion_speed = 4.0; //TODO
+				const double diffusion_speed = 1.0; //TODO
 				const double will_be_picked = proportion * diffusion_speed * configuration::TIME_STEP;
 				return std::min(will_be_picked, available_to_pick); //some adjust function to prevent carrying more soil than total volume
 			}
@@ -101,7 +101,7 @@ private:
 				{
 					const double available_to_drop = d.soil;
 					const double proportion = available_to_drop / max_picked;
-					const double diffusion_speed = 4.0;
+					const double diffusion_speed = 1.0;
 					const double will_be_dropped = proportion * diffusion_speed * configuration::TIME_STEP;
 					return std::min (will_be_dropped, available_to_drop);
 				}
@@ -118,13 +118,14 @@ private:
 	{
 		if ( !d.isDead )
 		{
-			if ( true )// d.pos.z >= getHeightAt (d.pos) + getWaterAt (d.pos) ) //if we are on top
+			if ( d.pos.z >= getHeightAt (d.pos) + getWaterAt (d.pos) ) //if we are on top
 			{
-				const double wing_speed = glm::length(glm::f64vec2(d.speed));//3; // m/s
+				const double wing_speed = 3.0;//3; // m/s
+				const double move_speed = glm::length (glm::f64vec2 (d.speed));
 				const double evap_coef = 25 + 19 * wing_speed; // kg/(m*m*h)
 				const double water_surface_area = terrain.pixel_to_meter_ratio_x * terrain.pixel_to_meter_ratio_y;
 				const double humidity_ratio_diff = 0.004859; // kg/kg
-				const double amount = evap_coef * water_surface_area * humidity_ratio_diff * (configuration::TIME_STEP / 10 ); // / 3600 );
+				const double amount = d.volume * evap_coef * water_surface_area * humidity_ratio_diff * (configuration::TIME_STEP / 60 ); // / 3600 );
 				return amount;
 			}
 			/*for ( uint32_t x = d.pos.x < 1 ? 0 : std::round (d.pos.x); //check is round could cause out of bounds
@@ -234,10 +235,10 @@ public:
 		droplets.reserve (droplets.size () + count); //WARN: possible overflow
 		for ( uint32_t i = 0; i < count; i++ )
 		{
-			const glm::f64vec3 pos = generatePositionFunc ();
 			Droplet& d = droplets.emplace_back ();
-			d.pos = pos;
+			d.spawn( generatePositionFunc ());
 			d.volume = configuration::WATER_DROPLET_VOLUME_M;
+			d.speed = getNormalAt (d.pos);
 			d.isDead = false;
 			d.isMoving = true;
 			//TODO: other properties
@@ -293,30 +294,28 @@ public:
 				continue;
 			}
 
+			if ( d.volume < configuration::WATER_DROPLET_VOLUME_M / 10 
+				|| glm::length(d.speed) < 0.005)
+			{
+				d.soil_drop (d.soil);
+				d.dead ();
+				continue;
+			}
+
 			const double target_height = getWaterAt (target_pos) + getHeightAt (target_pos);
 
 			if ( target_height > start_height )
 			{
-				const glm::f64vec3 planar_speed{ speed_per_time_step.x, speed_per_time_step.y, 0 };
-				if ( glm::length (planar_speed) < glm::length (glm::f64vec2( 0.5, 0.5 )) ) //TODO: adjust value
-				{
-					d.soil_drop (d.soil);
-					d.dead ();
-					continue;
-				}
-				else
-				{
-					//try next iteration
-					d.stop (); //prevent evaporation
-					d.speed /= 2;
-				}
+				d.soil_drop (d.soil);
+				d.dead ();
+				continue;
 			}
 			else
 			{
 				d.move (target_pos);
 				//recalculate speed
 				const glm::f64vec3 end_normal = getNormalAt (d.pos);
-				d.speed = glm::f64vec3{ end_normal.x, end_normal.y, end_normal.z };
+				d.speed = end_normal;// glm::f64vec3{ end_normal.x, end_normal.y, end_normal.z };
 			}
 			addDropletToMap (d);
 		}
@@ -360,32 +359,39 @@ public:
 	{
 		for ( auto& d : droplets )
 		{
-			const double amount_to_pick = calcAmountToPick (d);
-			const double amount_to_drop = calcAmountToDrop (d);
+			if ( d.isMoving && !d.isDead )
+			{
+				const double amount_to_pick = calcAmountToPick (d);
+				const double amount_to_drop = calcAmountToDrop (d);
 
-			if ( amount_to_pick > amount_to_drop )
-			{
-				const double diff = amount_to_pick - amount_to_drop;
-				d.pick_soil (diff);
-				terrain.getHeightMap ()->assign ((uint32_t)d.pos.x, (uint32_t)d.pos.y, getHeightAt (d.pos) - diff);
-			}
-			else
-			{
-				const double diff = amount_to_drop - amount_to_pick;
-				d.soil_drop (amount_to_drop);
-				terrain.getHeightMap ()->assign ((uint32_t)d.pos.x, (uint32_t)d.pos.y, getHeightAt (d.pos) + diff);
+				if ( amount_to_pick > amount_to_drop )
+				{
+					const double diff = amount_to_pick - amount_to_drop;
+					d.pick_soil (diff);
+					terrain.getHeightMap ()->assign ((uint32_t)d.pos.x, (uint32_t)d.pos.y, getHeightAt (d.pos) - diff);
+				}
+				else
+				{
+					const double diff = amount_to_drop - amount_to_pick;
+					d.soil_drop (amount_to_drop);
+					terrain.getHeightMap ()->assign ((uint32_t)d.pos.x, (uint32_t)d.pos.y, getHeightAt (d.pos) + diff);
+				}
 			}
 		}
 	}
 
 	void iteration ()
-	{
+	{//TODO: replace from: call each operation for all
+		// on call for each all operations in sequence
+		// to prevent confusing map changes
+		drop ();
+		terrain.generateNormalMap ();
 		move ();
-		pick_or_drop ();
+		pick ();
+		//pick_or_drop ();
 		evaporate ();
 		const auto deleted = delete_dead ();
 		generate (deleted); //recreate dead
-		terrain.generateNormalMap ();
 	}
 };
 

@@ -40,7 +40,7 @@ namespace configuration
 
 	/* erosion */
 
-	constexpr double WATER_DROPLET_RADIUS = 0.6 5; // in pixels
+	constexpr double WATER_DROPLET_RADIUS = 1.25; // in pixels
 
 	constexpr double WATER_DROPLET_RADIUS_M = WATER_DROPLET_RADIUS * PIXEL_TO_METER_RATIO_X; // in meters
 	constexpr double WATER_DROPLET_VOLUME_M = 4 * M_PI * (WATER_DROPLET_RADIUS * WATER_DROPLET_RADIUS * WATER_DROPLET_RADIUS) / 3; // in meters^3
