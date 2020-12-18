@@ -71,6 +71,7 @@ namespace Window
     static const Window_Type DROPLET_VOLUME = create<1, double>("droplet volume");
     static const Window_Type SOIL_PICKED = create<1, double>("soil picked");
     static const Window_Type SOIL_DROPPED = create<1, double>("soil dropped");
+    static const Window_Type SEDIMENT_MOVE = create<1, double> ("sediment move");
     static const Window_Type SEED = create<1, double> ("seed");
     static const Window_Type DEAD = create<1, double> ("dead");
     static const Window_Type EVAPORATE = create<1, double> ("evaporate");

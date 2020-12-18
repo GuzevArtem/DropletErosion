@@ -72,16 +72,16 @@ private:
 		if ( !d.isDead )
 		{
 			const double water_density = 999.83; //TODO
-			const double soil_density = 1800.36; //TODO
-			const double water_to_soil = (std::clamp(d.volume / d.soil, 0.0, 1.0) * water_density) / soil_density;
+			const double soil_density = 2400.36; //TODO
+			const double water_to_soil = water_density / soil_density;
 			const double max_picked = d.volume * water_to_soil;
 			if ( max_picked > d.soil )
 			{
 				const double available_to_pick = max_picked - d.soil;
-				const double proportion = (max_picked - d.soil)/ max_picked;
-				const double diffusion_speed = 0.5; //TODO
+				const double proportion = available_to_pick / max_picked;
+				const double diffusion_speed = 4.0; //TODO
 				const double will_be_picked = proportion * diffusion_speed * configuration::TIME_STEP;
-				return std::min(will_be_picked, std::lerp(0.5, max_picked, d.volume-d.soil)); //some adjust function to prevent carrying more soil than total volume
+				return std::min(will_be_picked, available_to_pick); //some adjust function to prevent carrying more soil than total volume
 			}
 		}
 		return 0.0;
@@ -94,16 +94,16 @@ private:
 			if ( d.soil > 0 )
 			{
 				const double water_density = 999.83; //TODO
-				const double soil_density = 1800.36; //TODO
-				const double water_to_soil = (std::clamp (d.volume / d.soil, 0.0, 1.0) * water_density) / soil_density;
+				const double soil_density = 2400.36; //TODO
+				const double water_to_soil = water_density / soil_density;
 				const double max_picked = d.volume * water_to_soil;
 				if ( max_picked < d.soil )
 				{
-					const double available_to_drop = d.soil - max_picked;
-					const double proportion = (d.soil - max_picked) / d.soil;
-					const double diffusion_speed = 0.5;
+					const double available_to_drop = d.soil;
+					const double proportion = available_to_drop / max_picked;
+					const double diffusion_speed = 4.0;
 					const double will_be_dropped = proportion * diffusion_speed * configuration::TIME_STEP;
-					return std::min (will_be_dropped, std::lerp (0.5, 0, d.soil));
+					return std::min (will_be_dropped, available_to_drop);
 				}
 			}
 			return 0.0;
@@ -283,7 +283,7 @@ public:
 			const double start_height = d.pos.z;
 			const glm::f64vec3 speed_per_time_step = d.speed * configuration::TIME_STEP;
 
-			 //TODO: teleporting droplets
+			//teleporting droplets
 			const glm::f64vec3 target_pos = d.pos + speed_per_time_step;
 
 			if ( target_pos.x <= 0.0 || target_pos.x >= terrain.size_x
@@ -298,7 +298,7 @@ public:
 			if ( target_height > start_height )
 			{
 				const glm::f64vec3 planar_speed{ speed_per_time_step.x, speed_per_time_step.y, 0 };
-				if ( glm::length (planar_speed) < 2.0 ) //TODO: adjust value
+				if ( glm::length (planar_speed) < glm::length (glm::f64vec2( 0.5, 0.5 )) ) //TODO: adjust value
 				{
 					d.soil_drop (d.soil);
 					d.dead ();

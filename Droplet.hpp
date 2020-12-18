@@ -145,7 +145,8 @@ public:
 		isMoving = true;
 		const glm::f64vec3 old_pos = pos;
 		pos = new_pos;
-		path_passed += glm::length (new_pos - old_pos);
+		const auto offset = glm::length (new_pos - old_pos);
+		path_passed += offset;
 		if ( onMove )
 		{
 			onMove->operator()(this, new_pos);

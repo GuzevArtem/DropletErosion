@@ -66,10 +66,10 @@ public:
                                }
 
                                //interpolated values
-                               const double inter_nx = (nxny + nxpy + 3 * nx) / 5;
-                               const double inter_px = (pxny + pxpy + 3 * px) / 5;
-                               const double inter_ny = (nxny + pxny + 3 * ny) / 5;
-                               const double inter_py = (nxpy + pxpy + 3 * py) / 5;
+                               const double inter_nx = (nxny + nxpy + 2 * nx + value[c]) / 5;
+                               const double inter_px = (pxny + pxpy + 2 * px + value[c]) / 5;
+                               const double inter_ny = (nxny + pxny + 2 * ny + value[c]) / 5;
+                               const double inter_py = (nxpy + pxpy + 2 * py + value[c]) / 5;
 
                                const glm::f64vec3 v1{ 2.0 / pixel_to_meter_ratio_x, 0.0, (inter_px - inter_nx) };
                                const glm::f64vec3 v2{ 0.0, 2.0 / pixel_to_meter_ratio_y, (inter_py - inter_ny) };
@@ -251,10 +251,10 @@ public:
                                 }
 
                                 //interpolated values
-                                const double inter_nx = (nxny + nxpy + 3 * nx) / 5;
-                                const double inter_px = (pxny + pxpy + 3 * px) / 5;
-                                const double inter_ny = (nxny + pxny + 3 * ny) / 5;
-                                const double inter_py = (nxpy + pxpy + 3 * py) / 5;
+                                const double inter_nx = (nxny + nxpy + 2 * nx + value) / 5;
+                                const double inter_px = (pxny + pxpy + 2 * px + value) / 5;
+                                const double inter_ny = (nxny + pxny + 2 * ny + value) / 5;
+                                const double inter_py = (nxpy + pxpy + 2 * py + value) / 5;
 
                                 const glm::f64vec3 v1{ 2.0 / pixel_to_meter_ratio_x, 0.0, (inter_px - inter_nx) };
                                 const glm::f64vec3 v2{ 0.0, 2.0 / pixel_to_meter_ratio_y, (inter_py - inter_ny) };

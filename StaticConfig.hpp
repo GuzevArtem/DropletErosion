@@ -40,24 +40,16 @@ namespace configuration
 
 	/* erosion */
 
-	constexpr double WATER_DROPLET_RADIUS = 0.65; // in pixels
+	constexpr double WATER_DROPLET_RADIUS = 0.6 5; // in pixels
 
 	constexpr double WATER_DROPLET_RADIUS_M = WATER_DROPLET_RADIUS * PIXEL_TO_METER_RATIO_X; // in meters
 	constexpr double WATER_DROPLET_VOLUME_M = 4 * M_PI * (WATER_DROPLET_RADIUS * WATER_DROPLET_RADIUS * WATER_DROPLET_RADIUS) / 3; // in meters^3
-	constexpr double WATER_DROPLET_MAX_SOIL_PERCENT_TO_CARRY = 0.5; // in percents (of total drop volume)
-	constexpr double WATER_DROPLET_DRY_PERCENT = 0.001; // in percents (of total drop volume)
-	constexpr double WATER_DROPLET_PASSIVE_SOIL_DROP_PERCENT = 0.1; // in percents (of total drop volume)
-	constexpr double WATER_DROPLET_PASSIVE_SOIL_PICK_PERCENT = 0.1; // in percents (of total drop volume)
-	constexpr double WATER_DROPLET_DENSITY = 0.07; //in kg/meters^3 This gives varying amounts of inertia and stuff...
-	constexpr double WATER_DROPLET_MINIMUM_VOLUME_M = 0.1; //in meters^3
-	constexpr double WATER_DROPLET_FRICTION = 0.05; //in H
-
 
 	/* simulation */
 
-	constexpr double TIME_STEP = 4.2;
-	constexpr size_t MAX_STEPS = 200000;
+	constexpr double TIME_STEP = 1.0; // < 1.0
+	constexpr size_t MAX_STEPS = 2000000;
 	constexpr size_t EROSION_STEP = 1000;
-	constexpr uint32_t INITIAL_MAXIMUM_DROPLET_COUNT = 10000;
+	constexpr uint32_t INITIAL_MAXIMUM_DROPLET_COUNT = 10000; // should be less than (size_x*size_y)/10
 
 }
