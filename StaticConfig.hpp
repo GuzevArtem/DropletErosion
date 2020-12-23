@@ -26,8 +26,8 @@ namespace configuration
 	constexpr double METER_TO_PIXEL_RATIO_Y = 1.0/ PIXEL_TO_METER_RATIO_Y; // coef how many pixels in meter along y
 
 	constexpr double TERRAIN_BASE_ELEVATION = 0; // in meters (default elevation)
-	constexpr double TERRAIN_MINIMUM_ELEVATION = -100; // in meters (value 0 on height map)
-	constexpr double TERRAIN_MAXIMUM_ELEVATION = +100; // in meters (value 1 on height map)
+	constexpr double TERRAIN_MINIMUM_ELEVATION = -500; // in meters (value 0 on height map)
+	constexpr double TERRAIN_MAXIMUM_ELEVATION = +500; // in meters (value 1 on height map)
 	constexpr double TERRAIN_HEIGHT = TERRAIN_MAXIMUM_ELEVATION - TERRAIN_MINIMUM_ELEVATION; // in meters
 	constexpr double SEA_LEVEL = 0; // in meters
 
@@ -40,7 +40,7 @@ namespace configuration
 
 	/* erosion */
 
-	constexpr double WATER_DROPLET_RADIUS = 1.25; // in pixels
+	constexpr double WATER_DROPLET_RADIUS = 0.55; // in pixels
 
 	constexpr double WATER_DROPLET_RADIUS_M = WATER_DROPLET_RADIUS * PIXEL_TO_METER_RATIO_X; // in meters
 	constexpr double WATER_DROPLET_VOLUME_M = 4 * M_PI * (WATER_DROPLET_RADIUS * WATER_DROPLET_RADIUS * WATER_DROPLET_RADIUS) / 3; // in meters^3

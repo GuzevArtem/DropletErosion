@@ -78,6 +78,12 @@ void save (const Terrain& terrain, const std::string path = "../images/")
     utils::opencv::saveImage<double> (soil, path, Window::SEDIMENT_MOVE.name () + ".jpg");
 }
 
+struct dropout
+{
+    glm::u32vec2 pos;
+    double distance;
+};
+
 int main ()
 {
     std::cout << "Start\n";
@@ -137,13 +143,25 @@ int main ()
 
     initTempaMaps (terrain.size_x, terrain.size_y);
 
-    /*dropletService.setOnDead ([](Droplet* d)->void
+    Grid<double> dropouts_max{ terrain.size_x, terrain.size_y};
+    Grid<double> dropouts_min{ terrain.size_x, terrain.size_y };
+
+    dropletService.setOnDead ([&dropouts_max, &dropouts_min](Droplet* d)->void
                               {
-                                  deadMap.at<double> (d->pos.x, d->pos.y) = deadMap.at<double> (d->pos.x, d->pos.y) + 0.01;
+                                  //deadMap.at<double> (d->pos.x, d->pos.y) = deadMap.at<double> (d->pos.x, d->pos.y) + 0.01;
+                                  if ( dropouts_min.at (d->pos.x, d->pos.y) > d->path_passed)
+                                  {
+                                      dropouts_min.assign_unchecked (d->pos.x, d->pos.y, d->path_passed);
+                                  }
+
+                                  if ( dropouts_max.at (d->pos.x, d->pos.y) < d->path_passed )
+                                  {
+                                      dropouts_max.assign_unchecked (d->pos.x, d->pos.y, d->path_passed);
+                                  }
                               });
 
     
-    dropletService.setOnMove ([](Droplet* d, glm::f64vec3 speed)->void
+    /*dropletService.setOnMove ([](Droplet* d, glm::f64vec3 speed)->void
                               {
                                   speedMap.at<cv::Vec3d> (d->pos.x, d->pos.y) = cv::Vec3d{ speed.x/5000, speed.y / 5000, speed.z / 5000 };
                               });*/
@@ -202,6 +220,32 @@ int main ()
 
     std::cout << "Total iterations count: "<< iteration << "\n";
     save (terrain, "D:\\Dev\\Cpp\\ai\\images\\processed\\");
+
+
+    std::cout << "Filter dropouts\n";
+
+    std::vector<dropout> dropouts;
+
+    dropouts_max.for_each ([&dropouts](const uint32_t x, const uint32_t y, const double value)->void
+                           {
+                               if ( value > 0 )
+                               {
+                                   dropouts.emplace_back (dropout{ glm::u32vec2 (x, y), value });
+                               }
+                           });
+    dropouts_min.for_each ([&dropouts](const uint32_t x, const uint32_t y, const double value)->void
+                           {
+                               if ( value > 0 )
+                               {
+                                   dropouts.emplace_back (dropout{ glm::u32vec2(x, y), value });
+                               }
+                           });
+
+    for ( const auto& d : dropouts )
+    {
+        std::cout << "Dead at: [ " << d.pos.x  << " " << d.pos.y << " ], with total path: " << d.distance << "\n";
+    }
+
     std::cout << "Press any button to exit.\n";
     utils::opencv::getUserInput ();
     utils::opencv::destroyAllWindows ();
